@@ -42,7 +42,8 @@ class StepVaePipeline(Resource):
         ).to(dtype).to(device).eval()
         print("Inintialized vae...")
         return model
- 
+
+    @timing_decorator
     def decode(self, samples, *args, **kwargs):
         with torch.no_grad():
             try:
