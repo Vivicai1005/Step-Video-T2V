@@ -6,6 +6,7 @@ import pickle
 import argparse
 import threading
 import argparse
+from stepvideo.utils import timing_decorator
 
 
 device = f'cuda:{torch.cuda.device_count()-1}'
@@ -94,7 +95,8 @@ class CaptionPipeline(Resource):
         clip = HunyuanClip(model_dir, max_length=77).to(device).eval()
         print("Inintialized clip encoder...")
         return clip
- 
+
+    @timing_decorator
     def embedding(self, prompts, *args, **kwargs):
         with torch.no_grad():
             try:

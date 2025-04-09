@@ -40,7 +40,7 @@ if __name__ == "__main__":
         time_shift=args.time_shift,
         pos_magic=args.pos_magic,
         neg_magic=args.neg_magic,
-        output_file_name=prompt[:50]
+        output_file_name='video'
     )
     
     dist.destroy_process_group()
