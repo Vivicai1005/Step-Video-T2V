@@ -326,7 +326,7 @@ class StepVideoPipeline(DiffusionPipeline):
         if not torch.distributed.is_initialized() or int(torch.distributed.get_rank())==0:
             if not output_type == "latent":
                 video = self.decode_vae(latents)
-                video = self.video_processor.postprocess_video(video, output_file_name=output_file_name, output_type=output_type)
+                video = self.video_processor.postprocess_video(video[0], output_file_name=output_file_name, output_type=output_type)
             else:
                 video = latents
 
