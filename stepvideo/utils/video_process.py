@@ -3,6 +3,11 @@ import datetime
 import torch
 import os
 import imageio
+import numpy as np
+from einops import rearrange
+from PIL import Image
+from tqdm import tqdm
+from stepvideo.utils import timing_decorator
 
 
 class VideoProcessor:
@@ -48,7 +53,7 @@ class VideoProcessor:
             writer.append_data(frame)
         writer.close()
         
-    
+    @timing_decorator
     def postprocess_video(self, video_tensor, output_file_name='', output_type="mp4", crop2standard540p=True):
         if len(self.name_suffix) == 0:
             video_path = os.path.join(self.save_path, f"{output_file_name}-{str(datetime.datetime.now())}.{output_type}")
