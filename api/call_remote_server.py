@@ -49,11 +49,12 @@ class StepVaePipeline(Resource):
             try:
                 dtype = next(self.vae.parameters()).dtype
                 device = next(self.vae.parameters()).device
-                samples = self.vae.decode(samples.to(dtype).to(device) / self.scale_factor)
+                samples = self.vae.decode(samples.to(dtype).to(device) / self.scale_factor, device=device)
                 if hasattr(samples,'sample'):
                     samples = samples.sample
                 return samples
-            except:
+            except Exception as e:
+                print("Failed to decode", e)
                 torch.cuda.empty_cache()
                 return None
 
