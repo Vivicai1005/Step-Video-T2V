@@ -276,23 +276,43 @@ class StepVideoPipeline(DiffusionPipeline):
         # 7. Denoising loop
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(self.scheduler.timesteps):
-                latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
+                #latent_model_input = torch.cat([latents] * 2) if do_classifier_free_guidance else latents
+                latent_model_input = latents
                 latent_model_input = latent_model_input.to(transformer_dtype)
                 # broadcast to batch dimension in a way that's compatible with ONNX/Core ML
-                timestep = t.expand(latent_model_input.shape[0]).to(latent_model_input.dtype)
-
+                #timestep = t.expand(latent_model_input.shape[0]).to(latent_model_input.dtype)
+                timestep = t.unsqueeze(0).to(latent_model_input.dtype)
+                # noise_pred = self.transformer(
+                #     hidden_states=latent_model_input,
+                #     timestep=timestep,
+                #     encoder_hidden_states=prompt_embeds,
+                #     encoder_attention_mask=prompt_attention_mask,
+                #     encoder_hidden_states_2=prompt_embeds_2,
+                #     return_dict=False,
+                # )
                 noise_pred = self.transformer(
                     hidden_states=latent_model_input,
                     timestep=timestep,
-                    encoder_hidden_states=prompt_embeds,
-                    encoder_attention_mask=prompt_attention_mask,
-                    encoder_hidden_states_2=prompt_embeds_2,
+                    encoder_hidden_states=prompt_embeds[:1, :],
+                    encoder_attention_mask=prompt_attention_mask[:1, :],
+                    encoder_hidden_states_2=prompt_embeds_2[:1, :],
                     return_dict=False,
                 )
+
+                noise_pred_negative = self.transformer(
+                    hidden_states=latent_model_input,
+                    timestep=timestep,
+                    encoder_hidden_states=prompt_embeds[1:2, :],
+                    encoder_attention_mask=prompt_attention_mask[1:2, :],
+                    encoder_hidden_states_2=prompt_embeds_2[1:2, :],
+                    return_dict=False,
+                )
+
                 # perform guidance
                 if do_classifier_free_guidance:
-                    noise_pred_text, noise_pred_uncond = noise_pred.chunk(2)
-                    noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                    # noise_pred_text, noise_pred_uncond = noise_pred.chunk(2)
+                    # noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
+                    noise_pred = noise_pred_negative + guidance_scale * (noise_pred - noise_pred_negative)
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(
