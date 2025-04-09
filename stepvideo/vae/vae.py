@@ -11,7 +11,7 @@
 # copies or substantial portions of the Software.
 # ==============================================================================
 import torch
-from einops import rearrange
+from einops import rearrange, repeat
 from torch import nn
 from torch.nn import functional as F
 from stepvideo.utils import with_empty_init
