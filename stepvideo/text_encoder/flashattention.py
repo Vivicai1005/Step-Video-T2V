@@ -11,6 +11,7 @@
 # copies or substantial portions of the Software.
 # ==============================================================================
 import torch
+import warnings
 
 def flash_attn_func(q, k, v, dropout_p=0.0, softmax_scale=None, causal=True,
                     return_attn_probs=False, tp_group_rank=0, tp_group_size=1):
