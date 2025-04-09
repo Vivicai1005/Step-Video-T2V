@@ -28,6 +28,8 @@ from xfuser.model_executor.models.customized.step_video_t2v.normalization import
 from diffusers.configuration_utils import ConfigMixin, register_to_config
 from diffusers.models.modeling_utils import ModelMixin
 
+from stepvideo.utils import timing_decorator
+
 
 
 class StepVideoModel(ModelMixin, ConfigMixin):
@@ -115,6 +117,7 @@ class StepVideoModel(ModelMixin, ConfigMixin):
         
         
     @parallel_forward
+    @timing_decorator
     def block_forward(
         self,
         hidden_states,

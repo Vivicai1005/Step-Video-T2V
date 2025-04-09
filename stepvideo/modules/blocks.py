@@ -14,9 +14,12 @@ import torch
 import torch.nn as nn
 from typing import Optional
 from einops import rearrange
+
 from stepvideo.modules.rope import RoPE3D
 from stepvideo.modules.attentions import Attention
 from stepvideo.modules.normalization import RMSNorm
+
+from stepvideo.utils import timing_decorator
 
 
 class SelfAttention(Attention):
@@ -244,6 +247,7 @@ class StepVideoTransformerBlock(nn.Module):
         self.scale_shift_table = nn.Parameter(torch.randn(6, dim) /dim**0.5)
 
     @torch.no_grad()
+    @timing_decorator
     def forward(
         self,
         q: torch.Tensor,
