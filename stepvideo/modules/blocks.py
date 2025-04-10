@@ -19,7 +19,6 @@ from stepvideo.modules.rope import RoPE3D
 from stepvideo.modules.attentions import Attention
 from stepvideo.modules.normalization import RMSNorm
 
-from stepvideo.utils import timing_decorator
 
 
 class SelfAttention(Attention):
@@ -44,12 +43,10 @@ class SelfAttention(Attention):
         self.core_attention = self.attn_processor(attn_type=attn_type)
         self.parallel = attn_type=='parallel'
 
-    @timing_decorator
     def apply_rope3d(self, x, fhw_positions, rope_ch_split, parallel=True):
         x = self.rope_3d(x, fhw_positions, rope_ch_split, parallel)
         return x
 
-    @timing_decorator
     def forward(
         self, 
         x,
@@ -102,7 +99,6 @@ class CrossAttention(Attention):
         
         self.core_attention = self.attn_processor(attn_type=attn_type)
 
-    @timing_decorator
     def forward(
             self, 
             x: torch.Tensor,
@@ -250,7 +246,6 @@ class StepVideoTransformerBlock(nn.Module):
         self.scale_shift_table = nn.Parameter(torch.randn(6, dim) /dim**0.5)
 
     @torch.no_grad()
-    @timing_decorator
     def forward(
         self,
         q: torch.Tensor,
