@@ -54,7 +54,7 @@ class VideoProcessor:
         writer.close()
         
     @func_timer_decorator
-    def postprocess_video(self, video_tensor, output_file_name='', output_type="mp4", crop2standard540p=True):
+    def postprocess_video(self, video_tensor, output_file_name='', output_type="mp4", crop2standard540p=False):
         if len(self.name_suffix) == 0:
             video_path = os.path.join(self.save_path, f"{output_file_name}-{str(datetime.datetime.now())}.{output_type}")
         else:
