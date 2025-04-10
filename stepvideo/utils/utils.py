@@ -63,7 +63,7 @@ def culens2mask(
     return attn_mask
 
 
-def timing_decorator(func):
+def func_timer_decorator(func):
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)

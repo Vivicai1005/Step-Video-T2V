@@ -6,7 +6,7 @@ import pickle
 import argparse
 import threading
 import argparse
-from stepvideo.utils import timing_decorator
+from stepvideo.utils import func_timer_decorator
 
 
 device = f'cuda:{torch.cuda.device_count()-1}'
@@ -43,7 +43,7 @@ class StepVaePipeline(Resource):
         print("Inintialized vae...")
         return model
 
-    @timing_decorator
+    @func_timer_decorator
     def decode(self, samples, *args, **kwargs):
         with torch.no_grad():
             try:
@@ -98,7 +98,7 @@ class CaptionPipeline(Resource):
         print("Inintialized clip encoder...")
         return clip
 
-    @timing_decorator
+    @func_timer_decorator
     def embedding(self, prompts, *args, **kwargs):
         with torch.no_grad():
             try:
